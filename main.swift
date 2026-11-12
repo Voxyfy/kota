@@ -66,6 +66,7 @@ struct Ring: View {
     let windows: [Window]?
     let now: Date
     let s: Double
+    @State private var hover = false
 
     var body: some View {
         // Tek halka: sınıra en yakın pencereyi gösterir; ayrıntı ipucunda.
@@ -92,7 +93,11 @@ struct Ring: View {
                 .font(.system(size: 11 * s, weight: .medium).monospacedDigit())
                 .foregroundStyle((pct ?? 0) >= 90 ? .red : .white)
         }
-        .help("\(provider.name)\n\(tip)")
+        // .help değil: ipuçları yalnızca etkin uygulamada çıkar, Kota ise hiç etkinleşmez.
+        .onHover { hover = $0 }
+        .popover(isPresented: $hover, arrowEdge: .leading) {
+            Text("\(provider.name)\n\(tip)").font(.system(size: 12)).padding(10).fixedSize()
+        }
     }
 }
 
